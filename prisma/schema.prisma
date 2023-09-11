@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum STATUS {
+  RENT
+  SALE
+}
+
+model Property {
+  id                    Int           @id          @default(autoincrement())
+  name                  String
+  price                 Float
+  desc                  String
+  number_of_bedrooms    Int
+  number_of_bathrooms   Int
+	area                  Float
+  image                 String
+  images                String[]
+  is_featured           Boolean
+  address               String
+  status                STATUS
+  location_id           Int
+  location              Location      @relation(fields: [location_id], references: [id])
+  type_id               Int
+  type                  Type          @relation(fields: [type_id], references: [id])               
+  agent_id              Int
+  agent                 Agent         @relation(fields: [agent_id], references: [id])
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+}
+
+model Location {
+  id                    Int           @id         @default(autoincrement())
+  name                  String
+  properties            Property[]
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+}
+
+model Type {
+  id                    Int           @id         @default(autoincrement())
+  name                  String
+  properties            Property[]
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+}
+
+model Agent {
+  id                    Int           @id         @default(autoincrement())
+  name                  String
+  email                 String
+  image                 String
+  phone                 String
+  about                 String
+  properties            Property[]
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+}
